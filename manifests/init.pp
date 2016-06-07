@@ -4,14 +4,16 @@
 #
 class oracledb(
                 $memory_target,
-                $manage_ntp=true,
-                $manage_tmpfs=true,
-                $ntp_servers=undef,
-                $preinstalltasks=true,
-                $createoracleusers=true,
-                $griduser=false,
-                $preinstallchecks=true,
+                $manage_ntp        = true,
+                $manage_tmpfs      = true,
+                $ntp_servers       = undef,
+                $preinstalltasks   = true,
+                $createoracleusers = true,
+                $griduser          = true,
+                $preinstallchecks  = true,
               ) inherits oracledb::params {
+
+  include ::limits
 
   class { 'oracledb::users':
     griduser          => $griduser,
@@ -31,7 +33,7 @@ class oracledb(
   if($preinstallchecks)
   {
     class { 'oracledb::preinstallchecks':
-      #before
+      require => Class['oracledb::preinstalltasks'],
     }
   }
 

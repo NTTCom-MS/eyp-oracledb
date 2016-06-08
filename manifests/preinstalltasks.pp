@@ -1,9 +1,9 @@
 class oracledb::preinstalltasks (
-                                  $memory_target,
-                                  $enabled=true,
-                                  $manage_ntp=true,
-                                  $ntp_servers=undef,
-                                  $manage_tmpfs=true,
+                                  $memory_target = '1G',
+                                  $enabled       = true,
+                                  $manage_ntp    = true,
+                                  $ntp_servers   = undef,
+                                  $manage_tmpfs  = true,
                                 ) inherits oracledb::params {
 
   if($enabled)
@@ -11,7 +11,7 @@ class oracledb::preinstalltasks (
     include ::epel
 
     package { $oracledb_dependencies:
-      ensure => 'installed',
+      ensure  => 'installed',
       require => Class['epel'],
     }
 
@@ -76,7 +76,7 @@ class oracledb::preinstalltasks (
     }
 
     sysctl::set { 'kernel.sem':
-      value => '250 32000 100 128',
+      value => "250\t32000\t100\t128",
     }
 
     # shmmax = 50% de la memoria total en bytes
@@ -141,14 +141,14 @@ class oracledb::preinstalltasks (
 
     # kernel.hostname =  hostname
 
-    sysctl::set { 'kernel.hostname':
-      value => $::fqdn,
-    }
+    # sysctl::set { 'kernel.hostname':
+    #   value => $::fqdn,
+    # }
 
     # vm.nr_hugepages= (60% memoria total en MB / 2) +2
 
     sysctl::set { 'vm.nr_hugepages':
-      value => ceiling(sprintf('%f', $::memorysize_mb)/2)+2,
+      value => ceiling(sprintf('%f', $::memorysize_mb)*0.3)+2,
     }
 
 
@@ -169,10 +169,10 @@ class oracledb::preinstalltasks (
     # tmpfs                   /dev/shm                tmpfs   defaults,size=2200m        0 0
     # ...
     mount { '/dev/shm':
-      ensure   => mounted,
-      device   => "none",
-      fstype   => 'tmpfs',
-      options  => "size=${memory_target}",
+      ensure  => mounted,
+      device  => 'none',
+      fstype  => 'tmpfs',
+      options => "size=${memory_target}",
     }
 
 

@@ -1,5 +1,7 @@
 # oracledb
 
+![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
+
 #### Table of Contents
 
 1. [Overview](#overview)
@@ -19,22 +21,25 @@ OracleDB installation
 
 ## Module Description
 
-If applicable, this section should have a brief description of the technology
-the module integrates with and what that integration enables. This section
-should answer the questions: "What does this module *do*?" and "Why would I use
-it?"
-
-If your module has a range of functionality (installation, configuration,
-management, etc.) this is the time to mention it.
+intended to install OracleDB (it actually does not install oracle, just sets prerequisites)
 
 ## Setup
 
 ### What oracledb affects
 
-* A list of files, packages, services, or operations that the module will alter,
-  impact, or execute on the system it's installed on.
-* This is a great place to stick any warnings.
-* Can be in list or paragraph form.
+* creates oracle and, optionally, grid users
+* this module is a ROLE thus uses other modules to achive it's goals:
+  * eyp/ntp
+  * eyp/firewalld
+  * eyp/tuned
+  * eyp/grub2
+  * eyp/chronyd
+  * eyp/nscd
+  * eyp/epel
+  * eyp/selinux
+  * eyp/limits
+  * eyp/sysctl
+    * **WARNING**: some sysctl settings are automatically calculated using system's memory, on a shared server it might **hurt performace** or trigger **OOM-killer**
 
 ### Setup Requirements
 
@@ -42,27 +47,32 @@ This module requires pluginsync enabled
 
 ### Beginning with oracledb
 
-The very basic steps needed for a user to get the module up and running.
-
-If your most recent release breaks compatibility or requires particular steps
-for upgrading, you may wish to include an additional section here: Upgrading
-(For an example, see http://forge.puppetlabs.com/puppetlabs/firewall).
+This module performs, so far, an initial setup to be able to install OracleDB
 
 ## Usage
 
-Put the classes, types, and resources for customizing, configuring, and doing
-the fancy stuff with your module here.
+```puppet
+class { 'oracledb':
+  memory_target => '550M',
+}
+```
 
 ## Reference
 
-Here, list the classes, types, providers, facts, etc contained in your module.
-This section should include all of the under-the-hood workings of your module so
-people know what the module is touching on their system but don't need to mess
-with things. (We are working on automating this section!)
+### oracledb
+
+* **memory_target** (default: 1G)
+* **manage_ntp**        = true,
+* **manage_tmpfs**      = true,
+* **ntp_servers**       = undef,
+* **preinstalltasks**   = true,
+* **createoracleusers** = true,
+* **griduser**          = true,
+* **preinstallchecks**  = true,
 
 ## Limitations
 
-This is where you list OS compatibility, version compatibility, etc.
+Tested on CentOS 7 only
 
 ## Development
 

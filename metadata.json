@@ -1,6 +1,6 @@
 {
   "name": "eyp-oracledb",
-  "version": "0.1.29",
+  "version": "0.1.31",
   "author": "eyp",
   "summary": "OracleDB role",
   "license": "Apache-2.0",
@@ -12,12 +12,12 @@
     {"name":"eyp/ntp","version_requirement":">= 0.1.0"},
     {"name":"eyp/firewalld","version_requirement":">= 0.1.0"},
     {"name":"eyp/tuned","version_requirement":">= 0.1.1"},
-    {"name":"eyp/grub2","version_requirement":">= 0.1.0"},
+    {"name":"eyp/grub2","version_requirement":">= 0.1.6"},
     {"name":"eyp/chronyd","version_requirement":">= 0.1.0"},
     {"name":"eyp/nscd","version_requirement":">= 0.1.0"},
     {"name":"eyp/epel","version_requirement":">= 3.1.11"},
     {"name":"eyp/selinux","version_requirement":">= 0.1.8"},
-    {"name":"eyp/limits","version_requirement":">= 3.1.8"},
+    {"name":"eyp/pam","version_requirement":">= 0.1.2"},
     {"name":"eyp/sysctl","version_requirement":">= 0.2.10"}
 
   ],

@@ -2,9 +2,10 @@ class oracledb::preinstalltasks (
                                   $memory_target = '1G',
                                   $enabled       = true,
                                   $manage_ntp    = true,
+                                  $manage_grub   = true,
                                   $ntp_servers   = undef,
                                   $manage_tmpfs  = true,
-                                ) inherits oracledb::params {
+                                ) inherits oracledb {
 
   if($enabled)
   {
@@ -26,8 +27,11 @@ class oracledb::preinstalltasks (
 
     include ::selinux
 
-    class { 'grub2':
-      transparent_huge_pages => 'never',
+    if($manage_grub)
+    {
+      class { 'grub2':
+        transparent_huge_pages => 'never',
+      }
     }
 
     class { 'tuned': }
@@ -74,7 +78,7 @@ class oracledb::preinstalltasks (
     }
 
     sysctl::set { 'kernel.sem':
-      value => "250\t32000\t100\t128",
+      value => $oracledb::kernel_sem,
     }
 
     if($::memorysize_mb>=16384)
@@ -111,7 +115,7 @@ class oracledb::preinstalltasks (
     # kernel.shmmni        =      4096
 
     sysctl::set { 'kernel.shmmni':
-      value => '4096',
+      value => $oracledb::kernel_shmmni,
     }
 
 
@@ -124,7 +128,7 @@ class oracledb::preinstalltasks (
     # fs.file-max        =      6815744
 
     sysctl::set { 'fs.file-max':
-      value => '6815744',
+      value => $oracledb::fs_file_max,
     }
 
     # fs.aio-max-nr      =    1048576
@@ -172,7 +176,7 @@ class oracledb::preinstalltasks (
     # net.ipv4.ip_local_port_range = 9000 65500
 
     sysctl::set { 'net.ipv4.ip_local_port_range':
-      value => "9000\t65500",
+      value => $oracledb::net_ipv4_ip_local_port_range,
     }
 
 

@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 0.2.2
+
+* added a flag to disable grub management
+
+## 0.2.1
+
+* changed subtask to inherit from **oracledb** instead of **oracledb::params**
+
 ## 0.1.37
 
 * adding specific stage for oracledb

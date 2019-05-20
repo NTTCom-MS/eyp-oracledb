@@ -4,9 +4,6 @@ class oracledb(
                 $manage_grub                  = true,
                 $manage_tmpfs                 = true,
                 $ntp_servers                  = undef,
-                $preinstalltasks              = true,
-                $createoracleusers            = true,
-                $griduser                     = true,
                 $preinstallchecks             = true,
                 $add_stage                    = true,
                 $fs_file_max                  = '6815744',
@@ -15,6 +12,13 @@ class oracledb(
                 $kernel_shmmni                = '4096',
                 $kernel_shmall                = undef,
                 $kernel_shmmax                = undef,
+                # preuinstall tasks
+                $preinstalltasks              = true,
+                $fs_aio_max_nr                = '1048576',
+                #users
+                $griduser                     = true,
+                $createoracleusers            = true,
+                $memlock                      = ceiling(sprintf('%f', $::memorysize_mb)*921.6),
               ) inherits oracledb::params {
 
   if($add_stage)
@@ -28,21 +32,11 @@ class oracledb(
     }
   }
 
-  class { '::oracledb::users':
-    griduser          => $griduser,
-    createoracleusers => $createoracleusers,
-  }
+  class { '::oracledb::users': }
 
   ->
 
-  class { 'oracledb::preinstalltasks':
-    enabled       => $preinstalltasks,
-    memory_target => $memory_target,
-    manage_ntp    => $manage_ntp,
-    manage_grub   => $manage_grub,
-    manage_tmpfs  => $manage_tmpfs,
-    ntp_servers   => $ntp_servers,
-  }
+  class { 'oracledb::preinstalltasks': }
 
   if($preinstallchecks)
   {

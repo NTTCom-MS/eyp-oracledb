@@ -1,13 +1,6 @@
-class oracledb::preinstalltasks (
-                                  $memory_target = '1G',
-                                  $enabled       = true,
-                                  $manage_ntp    = true,
-                                  $manage_grub   = true,
-                                  $ntp_servers   = undef,
-                                  $manage_tmpfs  = true,
-                                ) inherits oracledb {
+class oracledb::preinstalltasks inherits oracledb {
 
-  if($enabled)
+  if($oracledb::preinstalltasks)
   {
     include ::epel
 
@@ -27,7 +20,7 @@ class oracledb::preinstalltasks (
 
     include ::selinux
 
-    if($manage_grub)
+    if($oracledb::manage_grub)
     {
       class { 'grub2':
         transparent_huge_pages => 'never',
@@ -152,7 +145,7 @@ class oracledb::preinstalltasks (
     # fs.aio-max-nr      =    1048576
 
     sysctl::set { 'fs.aio-max-nr':
-      value => '1048576',
+      value => $oracledb::fs_aio_max_nr,
     }
 
     # net.core.rmem_default    =     262144
@@ -214,31 +207,34 @@ class oracledb::preinstalltasks (
     # ...
     # tmpfs                   /dev/shm                tmpfs   defaults,size=2200m        0 0
     # ...
-    if(defined(Mount['/dev/shm']))
+    if($oracledb::manage_tmpfs)
     {
-      $shm_options=getparam(Mount['/dev/shm'], 'options')
-
-      File <| title == '/dev/shm' |> {
-        options => "${shm_options},size=${memory_target}",
-      }
-      #
-      # Mount['/dev/shm'] {
-      #   options => "${shm_options},size=${memory_target}",
-      # }
-    }
-    else
-    {
-      mount { '/dev/shm':
-        ensure  => 'mounted',
-        device  => 'tmpfs',
-        fstype  => 'tmpfs',
-        options => "size=${memory_target}",
-      }
-
-      if($oracledb::add_stage)
+      if(defined(Mount['/dev/shm']))
       {
-        Mount['/dev/shm'] {
-          stage => 'eyp-oracle-db',
+        $shm_options=getparam(Mount['/dev/shm'], 'options')
+
+        File <| title == '/dev/shm' |> {
+          options => "${shm_options},size=${oracledb::memory_target}",
+        }
+        #
+        # Mount['/dev/shm'] {
+        #   options => "${shm_options},size=${memory_target}",
+        # }
+      }
+      else
+      {
+        mount { '/dev/shm':
+          ensure  => 'mounted',
+          device  => 'tmpfs',
+          fstype  => 'tmpfs',
+          options => "size=${oracledb::memory_target}",
+        }
+
+        if($oracledb::add_stage)
+        {
+          Mount['/dev/shm'] {
+            stage => 'eyp-oracle-db',
+          }
         }
       }
     }
@@ -252,10 +248,10 @@ class oracledb::preinstalltasks (
     # ...
     # [root@oracle12casm ~]# systemctl enable ntpd
     # [root@oracle12casm ~]# systemctl start ntpd
-    if($manage_ntp)
+    if($oracledb::manage_ntp)
     {
       class { 'ntp':
-        servers => $ntp_servers,
+        servers => $oracledb::ntp_servers,
       }
     }
 

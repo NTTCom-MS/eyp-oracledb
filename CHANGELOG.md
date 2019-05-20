@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 0.2.4
+
+* rework class variables
+* added **oracledb::fs_aio_max_nr** variable
+
 ## 0.2.3
 
 * bugfix tmpfs

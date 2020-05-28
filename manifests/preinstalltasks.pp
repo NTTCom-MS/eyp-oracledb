@@ -73,59 +73,16 @@ class oracledb::preinstalltasks inherits oracledb {
       value => $oracledb::kernel_sem,
     }
 
-    if($::memorysize_mb>=16384)
-    {
-      # mes de 16G
-      # shmmax = 50% de la memoria total en bytes
-
-      # shmall = shmmax/kernel.shmmni
-
-      sysctl::set { 'kernel.shmmax':
-        value => $oracledb::sysctl_kernel_shmmax,
-      }
-
-      if($oracledb::kernel_shmall!=undef)
-      {
-        $kernel_shmall_value = $oracledb::kernel_shmall
-      }
-      else
-      {
-        $kernel_shmall_value = ceiling(ceiling(sprintf('%f', $::memorysize_mb)*786432)/4096)
-      }
-
-      sysctl::set { 'kernel.shmall':
-        value => $kernel_shmall_value,
-      }
-    }
-    else
-    {
-      # menys de 16G
-      # shmmax = 50% de la memoria total en bytes
-
-      # shmall = shmmax/kernel.shmmni
-
-      if($oracledb::kernel_shmmax!=undef)
-      {
-        $kernel_shmmax_value = $oracledb::kernel_shmmax
-      }
-      else
-      {
-        $kernel_shmmax_value = ceiling(sprintf('%f', $::memorysize_mb)*524288)
-      }
-
-      sysctl::set { 'kernel.shmmax':
-        value => $kernel_shmmax_value,
-      }
-
-      sysctl::set { 'kernel.shmall':
-        value => ceiling(ceiling(sprintf('%f', $::memorysize_mb)*524288)/4096),
-      }
+    sysctl::set { 'kernel.shmmax':
+      value => $oracledb::sysctl_kernel_shmmax_value,
     }
 
-    # kernel.shmmni        =      4096
+    sysctl::set { 'kernel.shmall':
+      value => $oracledb::sysctl_kernel_shmall_value,
+    }
 
     sysctl::set { 'kernel.shmmni':
-      value => $oracledb::kernel_shmmni,
+      value => $oracledb::sysctl_kernel_shmmni_value,
     }
 
 
@@ -180,7 +137,7 @@ class oracledb::preinstalltasks inherits oracledb {
     # vm.nr_hugepages= (60% memoria total en MB / 2) +2
 
     sysctl::set { 'vm.nr_hugepages':
-      value => $oracledb::sysctl_vm_nr_hugepages,
+      value => $oracledb::sysctl_vm_nr_hugepages_value,
     }
 
     # net.ipv4.ip_local_port_range = 9000 65500
@@ -227,13 +184,6 @@ class oracledb::preinstalltasks inherits oracledb {
           device  => 'tmpfs',
           fstype  => 'tmpfs',
           options => "size=${oracledb::memory_target}",
-        }
-
-        if($oracledb::add_stage)
-        {
-          Mount['/dev/shm'] {
-            stage => 'eyp-oracle-db',
-          }
         }
       }
     }

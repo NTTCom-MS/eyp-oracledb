@@ -155,6 +155,22 @@ class oracledb::users() inherits oracledb {
         value  => $oracledb::limit_hard_nofile_grid,
         type   => 'hard',
       }
+     # grid soft nproc 16384
+     pam::limit { 'grid soft nproc':
+       domain => 'grid',
+       item   => 'nproc',
+       value  => $oracledb::limit_nproc_grid,
+       type   => 'soft',
+     }
+     # grid soft nproc 16384
+     pam::limit { 'grid hard nproc':
+       domain => 'grid',
+       item   => 'nproc',
+       value  => $oracledb::limit_nproc_grid,
+       type   => 'hard',
+     }
+
+
     }
   }
 }

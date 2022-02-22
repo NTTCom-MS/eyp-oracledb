@@ -12,10 +12,21 @@ class oracledb::preinstalltasks inherits oracledb {
     #firewalld
     include ::firewalld
 
-    class { 'chronyd':
-      service_ensure => 'masked',
+    case $::osfamily
+    {
+      'RedHat':
+      {
+        case $::operatingsystemrelease
+        {
+          /^7.*$/:
+          {
+            class { 'chronyd':
+              service_ensure => 'masked',
+                  }
+          }
+        }
+      }
     }
-
     include ::nscd
 
     include ::selinux
@@ -183,7 +194,7 @@ class oracledb::preinstalltasks inherits oracledb {
           ensure  => 'mounted',
           device  => 'tmpfs',
           fstype  => 'tmpfs',
-          options => "size=${oracledb::memory_target}",
+          options => "rw,exec,size=${oracledb::memory_target}",
         }
       }
     }
@@ -203,6 +214,21 @@ class oracledb::preinstalltasks inherits oracledb {
         servers => $oracledb::ntp_servers,
       }
     }
+    file { "/etc/sysconfig/network":
+            ensure  => 'present',
+            owner   => 'root',
+            group   => 'root',
+            mode    => '0644',
+            content => "NOZEROCONF=yes\n",
+            notify  => $notify_exec,
+          }
+    #file_line { "/etc/sysconfig/network":
+    #        ensure  => 'present',
+    #        path    => '/etc/sysconfig/network',
+    #        line    => "NOZEROCONF=yes\n",
+    #        match   =  "^NOZEROCONF=*"
+    #        notify  => $notify_exec,
+    #      }
 
   }
 

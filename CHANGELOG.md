@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.4.1
+
+* Added support for 19c RAC O RHEL8
+
 ## 0.4.0
 
 * config rework to base the settings on the SGA size in GB

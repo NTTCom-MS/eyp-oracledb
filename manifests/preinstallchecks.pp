@@ -14,6 +14,14 @@ class oracledb::preinstallchecks inherits oracledb {
     err('transparent_hugepage=never not present, reboot required')
   }
 
+  if !(
+        ($::eyp_grub2_kernel_cmdline!=undef) and
+        ($::eyp_grub2_kernel_cmdline  =~ /elevator=deadline/)
+      )
+  {
+    err('elevator=deadline not present, reboot required')
+  }
+
   if($current_mode!='disabled')
   {
     err('SELinux not disabled, reboot is mandatory')

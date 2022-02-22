@@ -27,7 +27,6 @@ RSpec.configure do |c|
       on host, puppet('module', 'install', 'eyp-selinux'), { :acceptable_exit_codes => [0,1] }
       on host, puppet('module', 'install', 'eyp-pam'), { :acceptable_exit_codes => [0,1] }
       on host, puppet('module', 'install', 'eyp-sysctl'), { :acceptable_exit_codes => [0,1] }
-      on host, puppet('module', 'install', 'eyp-network'), { :acceptable_exit_codes => [0,1] }
 
     end
   end

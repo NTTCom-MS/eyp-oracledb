@@ -1,6 +1,6 @@
 class oracledb(
                 $memory_target                       = '1G',
-                $manage_ntp                          = true,
+                $manage_ntp                          = $manage_ntp_default,
                 $manage_grub                         = true,
                 $manage_tmpfs                        = true,
                 $ntp_servers                         = undef,
@@ -28,14 +28,16 @@ class oracledb(
                 #users
                 $griduser                            = true,
                 $createoracleusers                   = true,
-                $limit_soft_nofile_oracle            = '1024',
+                $limit_soft_nofile_oracle            = '65536',
                 $limit_hard_nofile_oracle            = '65536',
-                $limit_soft_nproc_oracle             = '2047',
+                $limit_soft_nproc_oracle             = '16384',
                 $limit_hard_nproc_oracle             = '16384',
                 $limit_core_oracle                   = '4194304',
                 $limit_stack_oracle                  = '10240',
-                $limit_soft_nofile_grid              = '1024',
+                $limit_soft_nofile_grid              = '65536',
                 $limit_hard_nofile_grid              = '65536',
+                $limit_nproc_grid                    = '16384',
+
                 #
                 $memlock_factor                      = 0.95,
                 $sga_gb                              = 16,
